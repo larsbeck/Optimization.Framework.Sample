@@ -1,0 +1,1 @@
+NuGet.exe pack Optimization.Framework.Sample.nuspec

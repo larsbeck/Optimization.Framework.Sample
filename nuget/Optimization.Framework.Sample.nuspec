@@ -4,7 +4,7 @@
 	<id>Optimization.Framework.Sample</id>
     <version>1.0.0</version>
 	<title>Samples for Optimization.Framework</title>
-    <authors />
+    <authors>Lars Beckmann, Florian Isenberg, Marian Schiemann</authors>
 	<description>This package contains samples that demonstrate the use of the Optimization.Framework.</description>
 	<summary>This package contains samples that demonstrate the use of the Optimization.Framework.</summary>
 	<language>en-US</language>
