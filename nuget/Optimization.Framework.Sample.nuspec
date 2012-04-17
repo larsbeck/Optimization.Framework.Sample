@@ -18,5 +18,6 @@
   <files>
 	<file src="..\Samples\Optimization.Framework\TransportproblemSample.cs.pp" target="content\Samples\Optimization.Framework\TransportproblemSample.cs.pp" />
 	<file src="..\ProblemRunner.cs.pp" target="content\ProblemRunner.cs.pp" />
+	<file src="..\readme.txt" target="content\readme.txt" />
   </files>
 </package>
