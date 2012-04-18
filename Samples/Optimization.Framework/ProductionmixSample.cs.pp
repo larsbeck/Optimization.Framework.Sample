@@ -102,20 +102,13 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         public double Capacity { get; set; }
 
-        public ManHoursDictionary ManHours { get; set; }
+        public Dictionary<Desk, double> ManHours { get; set; }
 
         public Shop()
         {
-            ManHours = new ManHoursDictionary();
+            ManHours = new Dictionary<Desk, double>();
         }
     }
-
-    [CollectionDataContract
-    (Name = "shops",
-    ItemName = "entry",
-    KeyName = "desk",
-    ValueName = "manhours")]
-    public class ManHoursDictionary : Dictionary<Desk, double> { }
 
     class ProductionmixModel
     {

@@ -6,13 +6,13 @@ using $rootnamespace$.Samples.Optimization.Framework;
 
 namespace $rootnamespace$
 {
-    class ProblemRunner
-    {
-        static void Main(string[] args)
-        {
-        	TransportproblemSample.Run();
-                WarehouseproblemSample.Run();
-		ProductionmixSample.Run();
-        }
-    }
+	class ProblemRunner
+	{
+		static void Main(string[] args)
+		{
+			TransportproblemSample.Run();
+			WarehouseproblemSample.Run();
+			ProductionmixSample.Run();
+		}
+	}
 }
