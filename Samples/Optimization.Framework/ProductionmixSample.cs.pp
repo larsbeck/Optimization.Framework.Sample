@@ -61,7 +61,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             
             var mathModel = new Model();
 
-            var mix = new VariableCollection<Desk>("deskmix", 0, Double.PositiveInfinity, VariableType.Integer, productionmixModel.Desks);
+            var mix = new VariableCollection<Desk>("deskmix", 0, Double.PositiveInfinity, VariableType.Continuous, productionmixModel.Desks);
 
             mathModel.AddObjective(Expression.Sum(productionmixModel.Desks.Select(desk => desk.Price*mix[desk])), "profit", ObjectiveSense.Maximize);
 
