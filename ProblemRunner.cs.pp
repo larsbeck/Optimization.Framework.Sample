@@ -11,6 +11,8 @@ namespace $rootnamespace$
         static void Main(string[] args)
         {
         	TransportproblemSample.Run();
+                WarehouseproblemSample.Run();
+		ProductionmixSample.Run();
         }
     }
 }
