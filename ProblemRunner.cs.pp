@@ -10,9 +10,10 @@ namespace $rootnamespace$
     {
         static void Main(string[] args)
         {
-        	TransportproblemSample.Run();
-                WarehouseproblemSample.Run();
-		ProductionmixSample.Run();
+			TransportproblemSample.Run();
+			WarehouseproblemSample.Run();
+			ProductionmixSample.Run();
+			SteelProductionSample.Run();
         }
     }
 }
