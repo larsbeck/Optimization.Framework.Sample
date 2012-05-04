@@ -19,6 +19,7 @@
 	<file src="..\Samples\Optimization.Framework\TransportproblemSample.cs.pp" target="content\Samples\Optimization.Framework\TransportproblemSample.cs.pp" />
 	<file src="..\Samples\Optimization.Framework\WarehouseproblemSample.cs.pp" target="content\Samples\Optimization.Framework\WarehouseproblemSample.cs.pp" />
 	<file src="..\Samples\Optimization.Framework\SteelProductionSample.cs.pp" target="content\Samples\Optimization.Framework\SteelProductionSample.cs.pp" />
+	<file src="..\Samples\Optimization.Framework\SteelProductionTransportSample.cs.pp" target="content\Samples\Optimization.Framework\SteelProductionTransportSample.cs.pp" />
 	<file src="..\Samples\Optimization.Framework\ProductionmixSample.cs.pp" target="content\Samples\Optimization.Framework\ProductionmixSample.cs.pp" />
 	<file src="..\ProblemRunner.cs.pp" target="content\ProblemRunner.cs.pp" />
 	<file src="..\readme.txt" target="content\readme.txt" />
