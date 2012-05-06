@@ -14,6 +14,7 @@ namespace $rootnamespace$
 			WarehouseproblemSample.Run();
 			ProductionmixSample.Run();
 			SteelProductionSample.Run();
+			MultiTransportSample.Run();
         }
     }
 }
