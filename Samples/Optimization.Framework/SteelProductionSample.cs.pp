@@ -60,29 +60,29 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
             return solution;
         }
-    }
+		
+		/*
+		 * Classes used for the definition of the data.
+		 */
 
-    /*
-     * Classes used for the definition of the data.
-     */
+		class SteelProductionSampleModel
+		{
+			public List<Prod> Products;
+			public int HoursAvailable;
 
-    class SteelProductionSampleModel
-    {
-        public List<Prod> Products;
-        public int HoursAvailable;
+			public SteelProductionSampleModel()
+			{
+				Products = new List<Prod>();
+			}
+		}
 
-        public SteelProductionSampleModel()
-        {
-            Products = new List<Prod>();
-        }
-    }
-
-    class Prod
-    {
-        public string name { get; set; }
-        public int rate { get; set; }
-        public int profit { get; set; }
-        public int market { get; set; }
-        public int units { get; set; }
+		class Prod
+		{
+			public string name { get; set; }
+			public int rate { get; set; }
+			public int profit { get; set; }
+			public int market { get; set; }
+			public int units { get; set; }
+		}
     }
 }

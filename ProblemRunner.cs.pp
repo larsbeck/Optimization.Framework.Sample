@@ -15,6 +15,8 @@ namespace $rootnamespace$
 			ProductionmixSample.Run();
 			SteelProductionSample.Run();
 			MultiTransportSample.Run();
+			multmip1.Run();
+			multmip2.Run();
         }
     }
 }

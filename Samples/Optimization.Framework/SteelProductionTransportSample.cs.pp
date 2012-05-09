@@ -5,7 +5,6 @@ using System.Text;
 using Optimization;
 using Optimization.Interfaces;
 using Optimization.Solver.GLPK;
-using Optimization.Solver.Gurobi46;
 
 namespace $rootnamespace$.Samples.Optimization.Framework
 {
@@ -344,43 +343,43 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
             return solution;
         }
-    }
+		
+		/*
+		 * Classes used for definition of Data
+		 */
 
-    /*
-     * Classes used for definition of Data
-     */
+		class SteelProducionTransportSampleModel
+		{
+			public List<Orig> Origins;
+			public List<Dest> Destinations;
+			public List<Prod> Products;
 
-    class SteelProducionTransportSampleModel
-    {
-        public List<Orig> Origins;
-        public List<Dest> Destinations;
-        public List<Prod> Products;
+			public SteelProducionTransportSampleModel()
+			{
+				Origins = new List<Orig>();
+				Destinations = new List<Dest>();
+				Products = new List<Prod>();
+			}
+		}
 
-        public SteelProducionTransportSampleModel()
-        {
-            Origins = new List<Orig>();
-            Destinations = new List<Dest>();
-            Products = new List<Prod>();
-        }
-    }
+		class Orig //origins (steel mills)
+		{
+			public string Name { get; set; }
+			public Dictionary<Prod, int> Rate { get; set; }
+			public int Avail { get; set; }
+			public Dictionary<Prod, int> MakeCost { get; set; }
+			public List<Tuple<Dest, Prod, int>> TransCost { get; set; }
+		}
 
-    class Orig //origins (steel mills)
-    {
-        public string Name { get; set; }
-        public Dictionary<Prod, int> Rate { get; set; }
-        public int Avail { get; set; }
-        public Dictionary<Prod, int> MakeCost { get; set; }
-        public List<Tuple<Dest, Prod, int>> TransCost { get; set; }
-    }
+		class Dest //destinations (factories)
+		{
+			public string Name { get; set; }
+			public Dictionary<Prod, int> Demand { get; set; }
+		}
 
-    class Dest //destinations (factories)
-    {
-        public string Name { get; set; }
-        public Dictionary<Prod, int> Demand { get; set; }
-    }
-
-    class Prod //products
-    {
-        public string Name { get; set; }
+		class Prod //products
+		{
+			public string Name { get; set; }
+		}
     }
 }

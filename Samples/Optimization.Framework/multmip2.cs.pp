@@ -8,7 +8,7 @@ using Optimization.Solver.GLPK;
 
 namespace $rootnamespace$.Samples.Optimization.Framework
 {
-    class MultiTransportSample
+    class multmip2
     {
         public static void Run()
         {
@@ -18,13 +18,18 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         static Model BuildModel()
         {
-            var multiModel = new MultiTransportModel { Limit = 625 };
-            
+            var multimip2Model = new multimip2model { Limit = 625, MinLoad = 375 };
+
             var bands = new Prod { Id = 0, Name = "bands" };
             var coils = new Prod { Id = 1, Name = "coils" };
             var plate = new Prod { Id = 2, Name = "plate" };
 
-            var prods = new List<Prod> { bands, coils, plate };
+            var prods = new List<Prod>
+            {
+                bands,
+                coils,
+                plate
+            };
 
             var gary = new Orig
             {
@@ -60,7 +65,12 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 }
             };
 
-            var origs = new List<Orig> { gary, clev, pitt };
+            var origs = new List<Orig>
+            {
+                gary,
+                clev,
+                pitt
+            };
 
             Dest fra = new Dest
             {
@@ -142,9 +152,18 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 }
             };
 
-            var dests = new List<Dest> { fra, det, lan, win, stl, fre, laf };
+            var dests = new List<Dest>
+            {
+                fra,
+                det,
+                lan,
+                win,
+                stl,
+                fre,
+                laf
+            };
 
-            gary.Cost = new List<Tuple<Dest, Prod, int>>
+            gary.Vcost = new List<Tuple<Dest, Prod, int>>
             {
                 new Tuple<Dest,Prod,int>(fra,bands,30),
                 new Tuple<Dest,Prod,int>(fra,coils,39),
@@ -175,7 +194,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 new Tuple<Dest,Prod,int>(laf,plate,8)
             };
 
-            clev.Cost = new List<Tuple<Dest, Prod, int>>
+            clev.Vcost = new List<Tuple<Dest, Prod, int>>
             {
                 new Tuple<Dest,Prod,int>(fra,bands,22),
                 new Tuple<Dest,Prod,int>(fra,coils,27),
@@ -206,7 +225,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 new Tuple<Dest,Prod,int>(laf,plate,18)
             };
 
-            pitt.Cost = new List<Tuple<Dest, Prod, int>>
+            pitt.Vcost = new List<Tuple<Dest, Prod, int>>
             {
                 new Tuple<Dest,Prod,int>(fra,bands,19),
                 new Tuple<Dest,Prod,int>(fra,coils,24),
@@ -237,57 +256,118 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 new Tuple<Dest,Prod,int>(laf,plate,20)
             };
 
-            multiModel.Destinations = dests;
-            multiModel.Origins = origs;
-            multiModel.Products = prods;
+            gary.Fcost = new Dictionary<Dest, int>
+            {
+                {fra, 3000},
+                {det, 1200},
+                {lan, 1200},
+                {win, 1200},
+                {stl, 2500},
+                {fre, 3500},
+                {laf, 2500}
+            };
+
+            clev.Fcost = new Dictionary<Dest, int>
+            {
+                {fra, 2000},
+                {det, 1000},
+                {lan, 1500},
+                {win, 1200},
+                {stl, 2500},
+                {fre, 3000},
+                {laf, 2200}
+            };
+
+            pitt.Fcost = new Dictionary<Dest, int>
+            {
+                {fra, 2000},
+                {det, 1200},
+                {lan, 1500},
+                {win, 1500},
+                {stl, 2500},
+                {fre, 3500},
+                {laf, 2200}
+            };
+
+            foreach (Prod prod in prods)
+            {
+                if (origs.Sum(origin => origin.Supply[prod]) != dests.Sum(dest => dest.Demand[prod]))
+                {
+                    throw new ArgumentException("Supply needs to be equal to demand!");
+                }
+            }
+
+            multimip2Model.Destinations = dests;
+            multimip2Model.Origins = origs;
+            multimip2Model.Products = prods;
 
             /*
              * mathematical Model
              */
 
             var mathModel = new Model();
+
             var Trans = new VariableCollection<Orig, Dest, Prod>(
                 (x, y, z) => new StringBuilder("Product_").Append(z.Id).Append(" from Orig_").Append(x.Id).Append(" to Dest_").Append(y.Id),
                 0,
                 double.PositiveInfinity,
                 VariableType.Integer,
-                multiModel.Origins,
-                multiModel.Destinations,
-                multiModel.Products
+                multimip2Model.Origins,
+                multimip2Model.Destinations,
+                multimip2Model.Products
+                );
+
+            var Use = new VariableCollection<Orig, Dest>(
+                (x, y) => new StringBuilder("Orig_").Append(x.Id).Append(" to Dest_").Append(y.Id),
+                0,
+                1,
+                VariableType.Integer,
+                multimip2Model.Origins,
+                multimip2Model.Destinations
                 );
 
             mathModel.AddObjective(
-                Expression.Sum(multiModel.Origins.SelectMany(orig => orig.Cost.Select(costlist => (costlist.Item3 * Trans[orig, costlist.Item1, costlist.Item2])))),
+                Expression.Sum(multimip2Model.Origins.SelectMany(orig => orig.Vcost.Select(vcostlist => vcostlist.Item3 * Trans[orig, vcostlist.Item1, vcostlist.Item2]))) + Expression.Sum(multimip2Model.Origins.SelectMany(orig => multimip2Model.Destinations.Select(dest => orig.Fcost[dest] * Use[orig, dest]))),
                 "z"
                 );
 
             // Supply
-            foreach (Orig orig in multiModel.Origins)
+            foreach (Orig orig in multimip2Model.Origins)
             {
-                foreach (Prod prod in multiModel.Products)
+                foreach (Prod prod in multimip2Model.Products)
                 {
-                    var expression = Expression.Sum(multiModel.Destinations.Select(dest => Trans[orig, dest, prod]));
+                    var expression = Expression.Sum(multimip2Model.Destinations.Select(dest => Trans[orig, dest, prod]));
                     mathModel.AddConstraint(expression == orig.Supply[prod]);
                 }
             }
 
             // Demand
-            foreach (Dest dest in multiModel.Destinations)
+            foreach (Dest dest in multimip2Model.Destinations)
             {
-                foreach (Prod prod in multiModel.Products)
+                foreach (Prod prod in multimip2Model.Products)
                 {
-                    var expression = Expression.Sum(multiModel.Origins.Select(orig => Trans[orig, dest, prod]));
+                    var expression = Expression.Sum(multimip2Model.Origins.Select(orig => Trans[orig, dest, prod]));
                     mathModel.AddConstraint(expression == dest.Demand[prod]);
                 }
             }
 
-            // Limits
-            foreach (Orig orig in multiModel.Origins)
+            // Multi
+            foreach (Orig orig in multimip2Model.Origins)
             {
-                foreach (Dest dest in multiModel.Destinations)
+                foreach (Dest dest in multimip2Model.Destinations)
                 {
-                    var expression = Expression.Sum(multiModel.Products.Select(prod => Trans[orig, dest, prod]));
-                    mathModel.AddConstraint(expression <= multiModel.Limit);
+                    var expression = Expression.Sum(multimip2Model.Products.Select(prod => Trans[orig, dest, prod]));
+                    mathModel.AddConstraint(expression <= multimip2Model.Limit * Use[orig, dest]);
+                }
+            }
+
+            // Min-Ship
+            foreach (Orig orig in multimip2Model.Origins)
+            {
+                foreach (Dest dest in multimip2Model.Destinations)
+                {
+                    var expression = Expression.Sum(multimip2Model.Products.Select(prod => Trans[orig, dest, prod]));
+                    mathModel.AddConstraint(expression >= multimip2Model.MinLoad * Use[orig, dest]);
                 }
             }
 
@@ -299,50 +379,53 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             ISolver solver = new GLPKSolver(Console.WriteLine);
             Solution solution = solver.Solve(mathModel);
 
+            //ISolver solver2 = new GurobiSolver();
+            //Solution solution2 = solver2.Solve(mathModel);
+
             return solution;
         }
-		
-		/*
-		 * Classes used for the definition of the data
-		 */
 
-		class MultiTransportModel
-		{
-			public int Limit;
+        /*
+         * Classes used for the definition of the data
+         */
 
-			public List<Orig> Origins;
+        class multimip2model
+        {
+            public List<Orig> Origins;
+            public List<Dest> Destinations;
+            public List<Prod> Products;
 
-			public List<Dest> Destinations;
+            public int Limit;
+            public int MinLoad;
 
-			public List<Prod> Products;
+            public multimip2model()
+            {
+                Origins = new List<Orig>();
+                Destinations = new List<Dest>();
+                Products = new List<Prod>();
+            }
+        }
 
-			public MultiTransportModel()
-			{
-				Origins = new List<Orig>();
-				Destinations = new List<Dest>();
-				Products = new List<Prod>();
-			}
-		}
+        class Orig
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public Dictionary<Prod, int> Supply { get; set; }
+            public List<Tuple<Dest, Prod, int>> Vcost { get; set; }
+            public Dictionary<Dest, int> Fcost { get; set; }
+        }
 
-		class Orig
-		{
-			public int Id { get; set; }
-			public string Name { get; set; }
-			public Dictionary<Prod, int> Supply { get; set; }
-			public List<Tuple<Dest, Prod, int>> Cost { get; set; }
-		}
+        class Dest
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public Dictionary<Prod, int> Demand { get; set; }
+        }
 
-		class Dest
-		{
-			public int Id { get; set; }
-			public string Name { get; set; }
-			public Dictionary<Prod, int> Demand { get; set; }
-		}
-
-		class Prod
-		{
-			public int Id { get; set; }
-			public string Name { get; set; }
-		}
+        class Prod
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
     }
 }
