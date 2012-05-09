@@ -8,7 +8,7 @@ using Optimization.Solver.GLPK;
 
 namespace $rootnamespace$.Samples.Optimization.Framework
 {
-    class multmip2
+    class multmip3
     {
         public static void Run()
         {
@@ -18,7 +18,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         static Model BuildModel()
         {
-            var multimip2Model = new multimip2model { Limit = 625, MinLoad = 375 };
+            var multimip3Model = new multimip3model { Limit = 625, MinLoad = 375, MaxServe = 5 };
 
             var bands = new Prod { Id = 0, Name = "bands" };
             var coils = new Prod { Id = 1, Name = "coils" };
@@ -289,20 +289,20 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 {laf, 2200}
             };
 
-            foreach (Prod prod in prods)
+            multimip3Model.Destinations = dests;
+            multimip3Model.Origins = origs;
+            multimip3Model.Products = prods;
+
+            foreach (Prod prod in multimip3Model.Products)
             {
-                if (origs.Sum(origin => origin.Supply[prod]) != dests.Sum(dest => dest.Demand[prod]))
+                if (multimip3Model.Origins.Sum(orig => orig.Supply[prod]) != multimip3Model.Destinations.Sum(dest => dest.Demand[prod]))
                 {
                     throw new ArgumentException("Supply needs to be equal to demand!");
                 }
             }
 
-            multimip2Model.Destinations = dests;
-            multimip2Model.Origins = origs;
-            multimip2Model.Products = prods;
-
             /*
-             * mathematical Model
+             * mathematicalModel
              */
 
             var mathModel = new Model();
@@ -312,9 +312,9 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 0,
                 double.PositiveInfinity,
                 VariableType.Integer,
-                multimip2Model.Origins,
-                multimip2Model.Destinations,
-                multimip2Model.Products
+                multimip3Model.Origins,
+                multimip3Model.Destinations,
+                multimip3Model.Products
                 );
 
             var Use = new VariableCollection<Orig, Dest>(
@@ -322,55 +322,61 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 0,
                 1,
                 VariableType.Integer,
-                multimip2Model.Origins,
-                multimip2Model.Destinations
+                multimip3Model.Origins,
+                multimip3Model.Destinations
                 );
 
             mathModel.AddObjective(
-                Expression.Sum(multimip2Model.Origins.SelectMany(orig => orig.Vcost.Select(vcostlist => vcostlist.Item3 * Trans[orig, vcostlist.Item1, vcostlist.Item2]))) + Expression.Sum(multimip2Model.Origins.SelectMany(orig => multimip2Model.Destinations.Select(dest => orig.Fcost[dest] * Use[orig, dest]))),
+                Expression.Sum(multimip3Model.Origins.SelectMany(orig => orig.Vcost.Select(vcostlist => vcostlist.Item3 * Trans[orig, vcostlist.Item1, vcostlist.Item2]))) + Expression.Sum(multimip3Model.Origins.SelectMany(orig => multimip3Model.Destinations.Select(dest => orig.Fcost[dest] * Use[orig, dest]))),
                 "z"
                 );
 
             // Supply
-            foreach (Orig orig in multimip2Model.Origins)
+            foreach (Orig orig in multimip3Model.Origins)
             {
-                foreach (Prod prod in multimip2Model.Products)
+                foreach (Prod prod in multimip3Model.Products)
                 {
-                    var expression = Expression.Sum(multimip2Model.Destinations.Select(dest => Trans[orig, dest, prod]));
+                    var expression = Expression.Sum(multimip3Model.Destinations.Select(dest => Trans[orig, dest, prod]));
                     mathModel.AddConstraint(expression == orig.Supply[prod]);
                 }
             }
 
             // Demand
-            foreach (Dest dest in multimip2Model.Destinations)
+            foreach (Dest dest in multimip3Model.Destinations)
             {
-                foreach (Prod prod in multimip2Model.Products)
+                foreach (Prod prod in multimip3Model.Products)
                 {
-                    var expression = Expression.Sum(multimip2Model.Origins.Select(orig => Trans[orig, dest, prod]));
+                    var expression = Expression.Sum(multimip3Model.Origins.Select(orig => Trans[orig, dest, prod]));
                     mathModel.AddConstraint(expression == dest.Demand[prod]);
                 }
             }
 
             // Multi
-            foreach (Orig orig in multimip2Model.Origins)
+            foreach (Orig orig in multimip3Model.Origins)
             {
-                foreach (Dest dest in multimip2Model.Destinations)
+                foreach (Dest dest in multimip3Model.Destinations)
                 {
-                    var expression = Expression.Sum(multimip2Model.Products.Select(prod => Trans[orig, dest, prod]));
-                    mathModel.AddConstraint(expression <= multimip2Model.Limit * Use[orig, dest]);
+                    var expression = Expression.Sum(multimip3Model.Products.Select(prod => Trans[orig, dest, prod]));
+                    mathModel.AddConstraint(expression <= multimip3Model.Limit * Use[orig, dest]);
                 }
             }
 
-            // Min-Ship
-            foreach (Orig orig in multimip2Model.Origins)
+            // Min_Ship
+            foreach (Orig orig in multimip3Model.Origins)
             {
-                foreach (Dest dest in multimip2Model.Destinations)
+                foreach (Dest dest in multimip3Model.Destinations)
                 {
-                    var expression = Expression.Sum(multimip2Model.Products.Select(prod => Trans[orig, dest, prod]));
-                    mathModel.AddConstraint(expression >= multimip2Model.MinLoad * Use[orig, dest]);
+                    var expression = Expression.Sum(multimip3Model.Products.Select(prod => Trans[orig, dest, prod]));
+                    mathModel.AddConstraint(expression >= multimip3Model.MinLoad * Use[orig, dest]);
                 }
             }
 
+            // Max_Serve
+            foreach (var orig in multimip3Model.Origins)
+            {
+                mathModel.AddConstraint(Expression.Sum(multimip3Model.Destinations.Select(dest => Use[orig, dest])) <= multimip3Model.MaxServe);
+            }
+            
             return mathModel;
         }
 
@@ -386,7 +392,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
          * Classes used for the definition of the data
          */
 
-        class multimip2model
+        class multimip3model
         {
             public List<Orig> Origins;
             public List<Dest> Destinations;
@@ -394,8 +400,9 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
             public int Limit;
             public int MinLoad;
+            public int MaxServe;
 
-            public multimip2model()
+            public multimip3model()
             {
                 Origins = new List<Orig>();
                 Destinations = new List<Dest>();
