@@ -27,6 +27,7 @@
 	<file src="..\Samples\Optimization.Framework\multmip2.cs.pp" target="content\Samples\Optimization.Framework\multmip3.cs.pp" />
 	<file src="..\Samples\Optimization.Framework\steel3.cs.pp" target="content\Samples\Optimization.Framework\steel3.cs.pp" />
 	<file src="..\Samples\Optimization.Framework\steel4.cs.pp" target="content\Samples\Optimization.Framework\steel4.cs.pp" />
+	<file src="..\Samples\Optimization.Framework\TransportSample.cs.pp" target="content\Samples\Optimization.Framework\TransportSample.cs.pp" />
 	<file src="..\ProblemRunner.cs.pp" target="content\ProblemRunner.cs.pp" />
 	<file src="..\readme.txt" target="content\readme.txt" />
   </files>
