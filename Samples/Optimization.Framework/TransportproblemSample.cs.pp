@@ -92,7 +92,17 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             return solution;
         }
         
-        //Classes used for the definition of the data
+        /*
+		 * Classes used for definition of Data
+		 */
+		 
+		class TransportModel
+    	{
+        	public double Freight { get; set; }
+        	public List<CanningPlant> CanningPlants { get; set; }
+        	public List<Market> Markets { get; set; }
+    	} 
+		 
     	class Market
     	{
         	public string Name { get; set; }
@@ -113,13 +123,6 @@ namespace $rootnamespace$.Samples.Optimization.Framework
         	public string Name { get; set; }
         	public double Capacity { get; set; }
 
-    	}
-
-    	class TransportModel
-    	{
-        	public double Freight { get; set; }
-        	public List<CanningPlant> CanningPlants { get; set; }
-        	public List<Market> Markets { get; set; }
     	}
     }
 }
