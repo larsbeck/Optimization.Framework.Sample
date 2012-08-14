@@ -18,19 +18,21 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         static Model BuildModel()
         {
+            #region Data
+
             var steel4Model = new steel4model();
 
             var reheat = new Stage
             {
                 Id = 0,
                 Name = "reheat",
-                Avail = 35
+                Available = 35
             };
             var roll = new Stage
             {
                 Id = 1,
                 Name = "roll",
-                Avail = 40
+                Available = 40
             };
 
             var stages = new List<Stage>
@@ -39,9 +41,9 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 roll
             };
 
-            var prods = new List<Prod>
+            var products = new List<Product>
             {
-                new Prod
+                new Product
                 {
                     Id = 0,
                     Name = "bands",
@@ -54,7 +56,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                     Commit = 1000,
                     Market = 6000
                 },
-                new Prod
+                new Product
                 {
                     Id = 1,
                     Name = "coils",
@@ -67,7 +69,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                     Commit = 500,
                     Market = 4000
                 },
-                new Prod
+                new Product
                 {
                     Id = 2,
                     Name = "plate",
@@ -83,7 +85,11 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             };
 
             steel4Model.Stages = stages;
-            steel4Model.Products = prods;
+            steel4Model.Products = products;
+
+            #endregion
+
+            #region Model
 
             /*
              * mathematical Model
@@ -91,7 +97,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
             var mathModel = new Model();
 
-            var Make = new VariableCollection<Prod>(
+            var Make = new VariableCollection<Product>(
                 x => new StringBuilder("Prod_").Append(x.Id),
                 0,
                 double.PositiveInfinity,
@@ -102,7 +108,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
             foreach (Stage stage in steel4Model.Stages)
             {
-                mathModel.AddConstraint(Expression.Sum(steel4Model.Products.Select(prod => (1.0 / prod.Rate[stage]) * Make[prod])) <= stage.Avail);
+                mathModel.AddConstraint(Expression.Sum(steel4Model.Products.Select(prod => (1.0 / prod.Rate[stage]) * Make[prod])) <= stage.Available);
             }
 
             foreach (var prod in steel4Model.Products)
@@ -112,6 +118,8 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             }
 
             return mathModel;
+
+            #endregion
         }
 
         private static Solution SolveModel(Model mathModel)
@@ -128,17 +136,17 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         class steel4model
         {
-            public List<Prod> Products;
+            public List<Product> Products;
             public List<Stage> Stages;
 
             public steel4model()
             {
-                Products = new List<Prod>();
+                Products = new List<Product>();
                 Stages = new List<Stage>();
             }
         }
 
-        class Prod
+        class Product
         {
             public int Id { get; set; }
             public string Name { get; set; }
@@ -153,7 +161,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
         {
             public int Id { get; set; }
             public string Name { get; set; }
-            public int Avail { get; set; }
+            public int Available { get; set; }
         }
     }
 }

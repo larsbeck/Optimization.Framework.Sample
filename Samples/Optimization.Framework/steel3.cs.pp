@@ -18,11 +18,13 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         static Model BuildModel()
         {
+            #region Data
+
             var steel3Model = new steel3model { HoursAvailable = 40 };
 
-            var prods = new List<Prod>
+            var products = new List<Product>
             {
-                new Prod
+                new Product
                 {
                     Id = 0,
                     Name = "bands",
@@ -31,7 +33,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                     Commit = 1000,
                     Market = 6000
                 },
-                new Prod
+                new Product
                 {
                     Id = 1,
                     Name = "coils",
@@ -40,7 +42,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                     Commit = 500,
                     Market = 4000
                 },
-                new Prod
+                new Product
                 {
                     Id = 2,
                     Name = "plate",
@@ -51,7 +53,11 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 }
             };
 
-            steel3Model.Products = prods;
+            steel3Model.Products = products;
+
+            #endregion
+
+            #region Model
 
             /*
              * mathematical Model
@@ -59,7 +65,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
             var mathModel = new Model();
 
-            var Make = new VariableCollection<Prod>(
+            var Make = new VariableCollection<Product>(
                 x => new StringBuilder("Prod_").Append(x.Id),
                 0,
                 double.PositiveInfinity,
@@ -77,6 +83,8 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             mathModel.AddConstraint(Expression.Sum(steel3Model.Products.Select(p => (1.0 / p.Rate) * Make[p])) <= steel3Model.HoursAvailable);
 
             return mathModel;
+
+            #endregion
         }
 
         private static Solution SolveModel(Model mathModel)
@@ -93,17 +101,17 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         class steel3model
         {
-            public List<Prod> Products;
+            public List<Product> Products;
 
             public int HoursAvailable;
 
             public steel3model()
             {
-                Products = new List<Prod>();
+                Products = new List<Product>();
             }
         }
 
-        class Prod
+        class Product
         {
             public int Id { get; set; }
             public string Name { get; set; }
@@ -112,6 +120,5 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             public int Commit { get; set; }
             public int Market { get; set; }
         }
-
     }
 }

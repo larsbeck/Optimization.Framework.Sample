@@ -83,44 +83,42 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             return solution;
         }
 
-    }
+        /*
+         * Classes used for the definition of the data
+         */
 
-    /*
-    * Classes used for the definition of the data
-    */
-
-    public class Desk
-    {
-        public string Name { get; set; }
-
-        public double Price { get; set; }
-    }
-
-    public class Shop
-    {
-        public string Name { get; set; }
-
-        public double Capacity { get; set; }
-
-        public ManHoursDictionary ManHours { get; set; }
-
-        public Shop()
+        public class Desk
         {
-            ManHours = new ManHoursDictionary();
+            public string Name { get; set; }
+
+            public double Price { get; set; }
         }
-    }
 
-    [CollectionDataContract
-    (Name = "shops",
-    ItemName = "entry",
-    KeyName = "desk",
-    ValueName = "manhours")]
-    public class ManHoursDictionary : Dictionary<Desk, double> { }
+        public class Shop
+        {
+            public string Name { get; set; }
 
-    class ProductionmixModel
-    {
-        public List<Desk> Desks { get; set; }
+            public double Capacity { get; set; }
 
-        public List<Shop> Shops { get; set; }
-    }
+            public ManHoursDictionary ManHours { get; set; }
+
+            public Shop()
+            {
+                ManHours = new ManHoursDictionary();
+            }
+        }
+
+        [CollectionDataContract
+        (Name = "shops",
+        ItemName = "entry",
+        KeyName = "desk",
+        ValueName = "manhours")]
+        public class ManHoursDictionary : Dictionary<Desk, double> { }
+
+        class ProductionmixModel
+        {
+            public List<Desk> Desks { get; set; }
+
+            public List<Shop> Shops { get; set; }
+        }
 }
