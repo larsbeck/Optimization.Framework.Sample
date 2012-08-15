@@ -61,7 +61,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             
             var mathModel = new Model();
 
-            var mix = new VariableCollection<Desk>("deskmix", 0, Double.PositiveInfinity, VariableType.Continuous, productionmixModel.Desks);
+            var mix = new VariableCollection<Desk>("deskmix", 0, Double.PositiveInfinity, VariableType.Integer, productionmixModel.Desks);
 
             mathModel.AddObjective(Expression.Sum(productionmixModel.Desks.Select(desk => desk.Price*mix[desk])), "profit", ObjectiveSense.Maximize);
 
@@ -83,37 +83,42 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             return solution;
         }
 
-    }
+        /*
+         * Classes used for the definition of the data
+         */
 
-    /*
-    * Classes used for the definition of the data
-    */
-
-    public class Desk
-    {
-        public string Name { get; set; }
-
-        public double Price { get; set; }
-    }
-
-    public class Shop
-    {
-        public string Name { get; set; }
-
-        public double Capacity { get; set; }
-
-        public Dictionary<Desk, double> ManHours { get; set; }
-
-        public Shop()
+        public class Desk
         {
-            ManHours = new Dictionary<Desk, double>();
+            public string Name { get; set; }
+
+            public double Price { get; set; }
         }
-    }
 
-    class ProductionmixModel
-    {
-        public List<Desk> Desks { get; set; }
+        public class Shop
+        {
+            public string Name { get; set; }
 
-        public List<Shop> Shops { get; set; }
-    }
+            public double Capacity { get; set; }
+
+            public ManHoursDictionary ManHours { get; set; }
+
+            public Shop()
+            {
+                ManHours = new ManHoursDictionary();
+            }
+        }
+
+        [CollectionDataContract
+        (Name = "shops",
+        ItemName = "entry",
+        KeyName = "desk",
+        ValueName = "manhours")]
+        public class ManHoursDictionary : Dictionary<Desk, double> { }
+
+        class ProductionmixModel
+        {
+            public List<Desk> Desks { get; set; }
+
+            public List<Shop> Shops { get; set; }
+        }
 }

@@ -11,55 +11,59 @@ namespace $rootnamespace$.Samples.Optimization.Framework
     class SteelProductionSample
     {
         public static void Run()
-        {
-            Model model = BuildModel();
-            Solution solution = SolveModel(model);
-        }
+		{
+			Model model = BuildModel();
+			Solution solution = SolveModel(model);
+		}
 
-        static Model BuildModel()
-        {
-            /*
-             * Data
-             */
-            var steelProductionSample = new SteelProductionSampleModel { HoursAvailable = 40 };
+		static Model BuildModel()
+		{
+			#region Data
+			/*
+			 * Data
+			 */
+			var steelProductionSample = new SteelProductionSampleModel { HoursAvailable = 40 };
 
-            var bands = new Prod { name = "bands", rate = 200, profit = 25, market = 6000 };
-            var coils = new Prod { name = "coils", rate = 140, profit = 30, market = 4000 };
-            var prods = new List<Prod> { bands, coils };
+			var bands = new Product { Name = "bands", Rate = 200, Profit = 25, Market = 6000 };
+			var coils = new Product { Name = "coils", Rate = 140, Profit = 30, Market = 4000 };
+			var products = new List<Product> { bands, coils };
 
-            steelProductionSample.Products = prods;
+			steelProductionSample.Products = products;
+			#endregion
 
-            /*
-             * mathematical Model
-             */
-            var mathModel = new Model();
+			#region Model
+			/*
+			 * mathematical Model
+			 */
+			var mathModel = new Model();
 
-            var make = new VariableCollection<Prod>(product => new StringBuilder("Prod_").Append(product.name), 0, double.PositiveInfinity, VariableType.Integer, steelProductionSample.Products);
+			var make = new VariableCollection<Product>(product => new StringBuilder("Product_").Append(product.Name), 0, double.PositiveInfinity, VariableType.Integer, steelProductionSample.Products);
 
-            foreach (var product in steelProductionSample.Products)
-            {
-                mathModel.AddConstraint(make[product] <= product.market, new StringBuilder(product.name).Append("_market_ub").ToString());
-            }
+			foreach (var product in steelProductionSample.Products)
+			{
+				mathModel.AddConstraint(make[product] <= product.Market, new StringBuilder(product.Name).Append("_market_ub").ToString());
+			}
 
-            mathModel.AddObjective(Expression.Sum(steelProductionSample.Products.Select(product => product.profit * make[product])), "total_profit", ObjectiveSense.Maximize);
+			mathModel.AddObjective(Expression.Sum(steelProductionSample.Products.Select(product => product.Profit * make[product])), "total_profit", ObjectiveSense.Maximize);
 
-            mathModel.AddConstraint(Expression.Sum(steelProductionSample.Products.Select(product => (1.0 / product.rate) * make[product])) <= steelProductionSample.HoursAvailable);
+			mathModel.AddConstraint(Expression.Sum(steelProductionSample.Products.Select(product => (1.0 / product.Rate) * make[product])) <= steelProductionSample.HoursAvailable);
 
-            return mathModel;
-        }
+			return mathModel;
+			#endregion
+		}
 
-        private static Solution SolveModel(Model mathModel)
-        {
-            ISolver solver = new GLPKSolver(Console.WriteLine);
-            Solution solution = solver.Solve(mathModel);
+		private static Solution SolveModel(Model mathModel)
+		{
+			ISolver solver = new GLPKSolver(Console.WriteLine);
+			Solution solution = solver.Solve(mathModel);
 
-            foreach (var variable in solution.VariableValues)
-            {
-                Console.WriteLine(variable.Key + ": " +variable.Value);
-            }
+			foreach (var variable in solution.VariableValues)
+			{
+				Console.WriteLine(variable.Key + ": " +variable.Value);
+			}
 
-            return solution;
-        }
+			return solution;
+		}
 		
 		/*
 		 * Classes used for the definition of the data.
@@ -67,22 +71,22 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
 		class SteelProductionSampleModel
 		{
-			public List<Prod> Products;
+			public List<Product> Products;
 			public int HoursAvailable;
 
 			public SteelProductionSampleModel()
 			{
-				Products = new List<Prod>();
+				Products = new List<Product>();
 			}
 		}
 
-		class Prod
+		class Product
 		{
-			public string name { get; set; }
-			public int rate { get; set; }
-			public int profit { get; set; }
-			public int market { get; set; }
-			public int units { get; set; }
+			public string Name { get; set; }
+			public int Rate { get; set; }
+			public int Profit { get; set; }
+			public int Market { get; set; }
+			public int Units { get; set; }
 		}
     }
 }

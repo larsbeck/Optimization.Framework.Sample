@@ -18,61 +18,63 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         static Model BuildModel()
         {
+            #region Data
+
             var transportModel = new TransportModel();
             
             // dests
-            var fra = new Dest
+            var fra = new Destination
             {
                 Id = 0,
                 Name = "FRA",
                 Demand = 900
             };
-            var det = new Dest
+            var det = new Destination
             {
                 Id = 1,
                 Name = "DET",
                 Demand = 1200
             };
-            var lan = new Dest
+            var lan = new Destination
             {
                 Id = 2,
                 Name = "LAN",
                 Demand = 600
             };
-            var win = new Dest
+            var win = new Destination
             {
                 Id = 3,
                 Name = "WIN",
                 Demand = 400
             };
-            var stl = new Dest
+            var stl = new Destination
             {
                 Id = 4,
                 Name = "STL",
                 Demand = 1700
             };
-            var fre = new Dest
+            var fre = new Destination
             {
                 Id = 5,
                 Name = "FRE",
                 Demand = 1100
             };
-            var laf = new Dest
+            var laf = new Destination
             {
                 Id = 6,
                 Name = "LAF",
                 Demand = 1000
             };
 
-            var dests = new List<Dest> { fra, det, lan, win, stl, fre, laf };
+            var destinations = new List<Destination> { fra, det, lan, win, stl, fre, laf };
             
             //origs
-            var gary = new Orig
+            var gary = new Origin
             {
                 Id = 0,
                 Name = "GARY",
                 Supply = 1400,
-                Cost = new Dictionary<Dest, int>{
+                Cost = new Dictionary<Destination, int>{
                     {fra, 39},
                     {det, 14},
                     {lan, 11},
@@ -82,12 +84,12 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                     {laf, 8}
                 }
             };
-            var clev = new Orig
+            var clev = new Origin
             {
                 Id = 1,
                 Name = "CLEV",
                 Supply = 2600,
-                Cost = new Dictionary<Dest, int>
+                Cost = new Dictionary<Destination, int>
                 {
                     {fra, 27},
                     {det, 9},
@@ -98,12 +100,12 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                     {laf, 17}
                 }
             };
-            var pitt = new Orig
+            var pitt = new Origin
             {
                 Id = 2,
                 Name = "PITT",
                 Supply = 2900,
-                Cost = new Dictionary<Dest, int>
+                Cost = new Dictionary<Destination, int>
                 {
                     {fra, 24},
                     {det, 14},
@@ -115,10 +117,14 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 }
             };
 
-            var origs = new List<Orig> { gary, clev, pitt };
+            var origins = new List<Origin> { gary, clev, pitt };
 
-            transportModel.Destinations = dests;
-            transportModel.Origins = origs;
+            transportModel.Destinations = destinations;
+            transportModel.Origins = origins;
+
+            #endregion
+
+            #region Model
 
             /*
              * mathematical Model
@@ -126,7 +132,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
             
             var mathModel = new Model();
 
-            var Trans = new VariableCollection<Orig, Dest>(
+            var Transport = new VariableCollection<Origin, Destination>(
                 (x, y) => new StringBuilder("Orig_").Append(x.Name).Append(" to Dest_").Append(y.Name),
                 0,
                 Double.PositiveInfinity,
@@ -136,24 +142,26 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 );
 
             mathModel.AddObjective(
-                Expression.Sum(transportModel.Origins.SelectMany(orig => transportModel.Destinations.Select(dest => orig.Cost[dest] * Trans[orig, dest])))
+                Expression.Sum(transportModel.Origins.SelectMany(orig => transportModel.Destinations.Select(dest => orig.Cost[dest] * Transport[orig, dest])))
                 );
 
-            foreach (Orig orig in transportModel.Origins)
+            foreach (Origin orig in transportModel.Origins)
             {
                 mathModel.AddConstraint(
-                    Expression.Sum(transportModel.Destinations.Select(dest => Trans[orig, dest])) == orig.Supply
+                    Expression.Sum(transportModel.Destinations.Select(dest => Transport[orig, dest])) == orig.Supply
                     );
             }
 
-            foreach (Dest dest in transportModel.Destinations)
+            foreach (Destination dest in transportModel.Destinations)
             {
                 mathModel.AddConstraint(
-                    Expression.Sum(transportModel.Origins.Select(orig => Trans[orig, dest])) == dest.Demand
+                    Expression.Sum(transportModel.Origins.Select(orig => Transport[orig, dest])) == dest.Demand
                     );
             }
 
             return mathModel;
+
+            #endregion
         }
 
         private static Solution SolveModel(Model mathModel)
@@ -170,25 +178,25 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         class TransportModel
         {
-            public List<Orig> Origins;
-            public List<Dest> Destinations;
+            public List<Origin> Origins;
+            public List<Destination> Destinations;
 
             public TransportModel()
             {
-                Origins = new List<Orig>();
-                Destinations = new List<Dest>();
+                Origins = new List<Origin>();
+                Destinations = new List<Destination>();
             }
         }
 
-        class Orig
+        class Origin
         {
             public int Id { get; set; }
             public string Name { get; set; }
             public int Supply { get; set; }
-            public Dictionary<Dest, int> Cost { get; set; }
+            public Dictionary<Destination, int> Cost { get; set; }
         }
 
-        class Dest
+        class Destination
         {
             public int Id { get; set; }
             public string Name { get; set; }

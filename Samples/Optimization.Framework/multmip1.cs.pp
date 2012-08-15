@@ -18,46 +18,48 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         static Model BuildModel()
         {
+            #region Data
+
             var multimip1Model = new multimip1model { Limit = 625 };
 
-            var bands = new Prod { Id = 0, Name = "bands" };
-            var coils = new Prod { Id = 1, Name = "coils" };
-            var plate = new Prod { Id = 2, Name = "plate" };
+            var bands = new Product { Id = 0, Name = "bands" };
+            var coils = new Product { Id = 1, Name = "coils" };
+            var plate = new Product { Id = 2, Name = "plate" };
 
-            var prods = new List<Prod>
+            var products = new List<Product>
             {
                 bands,
                 coils,
                 plate
             };
 
-            var gary = new Orig
+            var gary = new Origin
             {
                 Id = 0,
                 Name = "GARY",
-                Supply = new Dictionary<Prod, int>
+                Supply = new Dictionary<Product, int>
                 {
                     {bands, 400},
                     {coils, 800},
                     {plate, 200}
                 }
             };
-            var clev = new Orig
+            var clev = new Origin
             {
                 Id = 1,
                 Name = "CLEV",
-                Supply = new Dictionary<Prod, int>
+                Supply = new Dictionary<Product, int>
                 {
                     {bands, 700},
                     {coils, 1600},
                     {plate, 300}
                 }
             };
-            var pitt = new Orig
+            var pitt = new Origin
             {
                 Id = 2,
                 Name = "PITT",
-                Supply = new Dictionary<Prod, int>
+                Supply = new Dictionary<Product, int>
                 {
                     {bands, 800},
                     {coils, 1800},
@@ -65,18 +67,18 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 }
             };
 
-            var origs = new List<Orig>
+            var origins = new List<Origin>
             {
                 gary,
                 clev,
                 pitt
             };
 
-            Dest fra = new Dest
+            Destination fra = new Destination
             {
                 Id = 0,
                 Name = "FRA",
-                Demand = new Dictionary<Prod, int>
+                Demand = new Dictionary<Product, int>
                 {
                     {bands, 300},
                     {coils, 500},
@@ -84,11 +86,11 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 }
             };
 
-            Dest det = new Dest
+            Destination det = new Destination
             {
                 Id = 1,
                 Name = "DET",
-                Demand = new Dictionary<Prod, int>
+                Demand = new Dictionary<Product, int>
                 {
                     {bands, 300},
                     {coils, 750},
@@ -96,55 +98,55 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 }
             };
 
-            Dest lan = new Dest
+            Destination lan = new Destination
             {
                 Id = 2,
                 Name = "LAN",
-                Demand = new Dictionary<Prod, int>
+                Demand = new Dictionary<Product, int>
                 {
                     {bands, 100},
                     {coils, 400},
                     {plate, 0}
                 }
             };
-            Dest win = new Dest
+            Destination win = new Destination
             {
                 Id = 3,
                 Name = "WIN",
-                Demand = new Dictionary<Prod, int>
+                Demand = new Dictionary<Product, int>
                 {
                     {bands, 75},
                     {coils, 250},
                     {plate, 50}
                 }
             };
-            Dest stl = new Dest
+            Destination stl = new Destination
             {
                 Id = 4,
                 Name = "STL",
-                Demand = new Dictionary<Prod, int>
+                Demand = new Dictionary<Product, int>
                 {
                     {bands, 650},
                     {coils, 950},
                     {plate, 200}
                 }
             };
-            Dest fre = new Dest
+            Destination fre = new Destination
             {
                 Id = 5,
                 Name = "FRE",
-                Demand = new Dictionary<Prod, int>
+                Demand = new Dictionary<Product, int>
                 {
                     {bands, 225},
                     {coils, 850},
                     {plate, 100}
                 }
             };
-            Dest laf = new Dest
+            Destination laf = new Destination
             {
                 Id = 6,
                 Name = "LAF",
-                Demand = new Dictionary<Prod, int>
+                Demand = new Dictionary<Product, int>
                 {
                     {bands, 250},
                     {coils, 500},
@@ -152,7 +154,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 }
             };
 
-            var dests = new List<Dest>
+            var destinations = new List<Destination>
             {
                 fra,
                 det,
@@ -163,100 +165,100 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 laf
             };
 
-            gary.Vcost = new List<Tuple<Dest, Prod, int>>
+            gary.Vcost = new List<Tuple<Destination, Product, int>>
             {
-                new Tuple<Dest,Prod,int>(fra,bands,30),
-                new Tuple<Dest,Prod,int>(fra,coils,39),
-                new Tuple<Dest,Prod,int>(fra,plate,41),
+                new Tuple<Destination,Product,int>(fra,bands,30),
+                new Tuple<Destination,Product,int>(fra,coils,39),
+                new Tuple<Destination,Product,int>(fra,plate,41),
 
-                new Tuple<Dest,Prod,int>(det,bands,10),
-                new Tuple<Dest,Prod,int>(det,coils,14),
-                new Tuple<Dest,Prod,int>(det,plate,15),
+                new Tuple<Destination,Product,int>(det,bands,10),
+                new Tuple<Destination,Product,int>(det,coils,14),
+                new Tuple<Destination,Product,int>(det,plate,15),
 
-                new Tuple<Dest,Prod,int>(lan,bands,8),
-                new Tuple<Dest,Prod,int>(lan,coils,11),
-                new Tuple<Dest,Prod,int>(lan,plate,12),
+                new Tuple<Destination,Product,int>(lan,bands,8),
+                new Tuple<Destination,Product,int>(lan,coils,11),
+                new Tuple<Destination,Product,int>(lan,plate,12),
 
-                new Tuple<Dest,Prod,int>(win,bands,10),
-                new Tuple<Dest,Prod,int>(win,coils,14),
-                new Tuple<Dest,Prod,int>(win,plate,16),
+                new Tuple<Destination,Product,int>(win,bands,10),
+                new Tuple<Destination,Product,int>(win,coils,14),
+                new Tuple<Destination,Product,int>(win,plate,16),
 
-                new Tuple<Dest,Prod,int>(stl,bands,11),
-                new Tuple<Dest,Prod,int>(stl,coils,16),
-                new Tuple<Dest,Prod,int>(stl,plate,17),
+                new Tuple<Destination,Product,int>(stl,bands,11),
+                new Tuple<Destination,Product,int>(stl,coils,16),
+                new Tuple<Destination,Product,int>(stl,plate,17),
 
-                new Tuple<Dest,Prod,int>(fre,bands,71),
-                new Tuple<Dest,Prod,int>(fre,coils,82),
-                new Tuple<Dest,Prod,int>(fre,plate,86),
+                new Tuple<Destination,Product,int>(fre,bands,71),
+                new Tuple<Destination,Product,int>(fre,coils,82),
+                new Tuple<Destination,Product,int>(fre,plate,86),
 
-                new Tuple<Dest,Prod,int>(laf,bands,6),
-                new Tuple<Dest,Prod,int>(laf,coils,8),
-                new Tuple<Dest,Prod,int>(laf,plate,8)
+                new Tuple<Destination,Product,int>(laf,bands,6),
+                new Tuple<Destination,Product,int>(laf,coils,8),
+                new Tuple<Destination,Product,int>(laf,plate,8)
             };
 
-            clev.Vcost = new List<Tuple<Dest, Prod, int>>
+            clev.Vcost = new List<Tuple<Destination, Product, int>>
             {
-                new Tuple<Dest,Prod,int>(fra,bands,22),
-                new Tuple<Dest,Prod,int>(fra,coils,27),
-                new Tuple<Dest,Prod,int>(fra,plate,29),
+                new Tuple<Destination,Product,int>(fra,bands,22),
+                new Tuple<Destination,Product,int>(fra,coils,27),
+                new Tuple<Destination,Product,int>(fra,plate,29),
 
-                new Tuple<Dest,Prod,int>(det,bands,7),
-                new Tuple<Dest,Prod,int>(det,coils,9),
-                new Tuple<Dest,Prod,int>(det,plate,9),
+                new Tuple<Destination,Product,int>(det,bands,7),
+                new Tuple<Destination,Product,int>(det,coils,9),
+                new Tuple<Destination,Product,int>(det,plate,9),
 
-                new Tuple<Dest,Prod,int>(lan,bands,10),
-                new Tuple<Dest,Prod,int>(lan,coils,12),
-                new Tuple<Dest,Prod,int>(lan,plate,13),
+                new Tuple<Destination,Product,int>(lan,bands,10),
+                new Tuple<Destination,Product,int>(lan,coils,12),
+                new Tuple<Destination,Product,int>(lan,plate,13),
 
-                new Tuple<Dest,Prod,int>(win,bands,7),
-                new Tuple<Dest,Prod,int>(win,coils,9),
-                new Tuple<Dest,Prod,int>(win,plate,9),
+                new Tuple<Destination,Product,int>(win,bands,7),
+                new Tuple<Destination,Product,int>(win,coils,9),
+                new Tuple<Destination,Product,int>(win,plate,9),
 
-                new Tuple<Dest,Prod,int>(stl,bands,21),
-                new Tuple<Dest,Prod,int>(stl,coils,26),
-                new Tuple<Dest,Prod,int>(stl,plate,28),
+                new Tuple<Destination,Product,int>(stl,bands,21),
+                new Tuple<Destination,Product,int>(stl,coils,26),
+                new Tuple<Destination,Product,int>(stl,plate,28),
 
-                new Tuple<Dest,Prod,int>(fre,bands,82),
-                new Tuple<Dest,Prod,int>(fre,coils,95),
-                new Tuple<Dest,Prod,int>(fre,plate,99),
+                new Tuple<Destination,Product,int>(fre,bands,82),
+                new Tuple<Destination,Product,int>(fre,coils,95),
+                new Tuple<Destination,Product,int>(fre,plate,99),
 
-                new Tuple<Dest,Prod,int>(laf,bands,13),
-                new Tuple<Dest,Prod,int>(laf,coils,17),
-                new Tuple<Dest,Prod,int>(laf,plate,18)
+                new Tuple<Destination,Product,int>(laf,bands,13),
+                new Tuple<Destination,Product,int>(laf,coils,17),
+                new Tuple<Destination,Product,int>(laf,plate,18)
             };
 
-            pitt.Vcost = new List<Tuple<Dest, Prod, int>>
+            pitt.Vcost = new List<Tuple<Destination, Product, int>>
             {
-                new Tuple<Dest,Prod,int>(fra,bands,19),
-                new Tuple<Dest,Prod,int>(fra,coils,24),
-                new Tuple<Dest,Prod,int>(fra,plate,26),
+                new Tuple<Destination,Product,int>(fra,bands,19),
+                new Tuple<Destination,Product,int>(fra,coils,24),
+                new Tuple<Destination,Product,int>(fra,plate,26),
 
-                new Tuple<Dest,Prod,int>(det,bands,11),
-                new Tuple<Dest,Prod,int>(det,coils,14),
-                new Tuple<Dest,Prod,int>(det,plate,14),
+                new Tuple<Destination,Product,int>(det,bands,11),
+                new Tuple<Destination,Product,int>(det,coils,14),
+                new Tuple<Destination,Product,int>(det,plate,14),
 
-                new Tuple<Dest,Prod,int>(lan,bands,12),
-                new Tuple<Dest,Prod,int>(lan,coils,17),
-                new Tuple<Dest,Prod,int>(lan,plate,17),
+                new Tuple<Destination,Product,int>(lan,bands,12),
+                new Tuple<Destination,Product,int>(lan,coils,17),
+                new Tuple<Destination,Product,int>(lan,plate,17),
 
-                new Tuple<Dest,Prod,int>(win,bands,10),
-                new Tuple<Dest,Prod,int>(win,coils,13),
-                new Tuple<Dest,Prod,int>(win,plate,13),
+                new Tuple<Destination,Product,int>(win,bands,10),
+                new Tuple<Destination,Product,int>(win,coils,13),
+                new Tuple<Destination,Product,int>(win,plate,13),
 
-                new Tuple<Dest,Prod,int>(stl,bands,25),
-                new Tuple<Dest,Prod,int>(stl,coils,28),
-                new Tuple<Dest,Prod,int>(stl,plate,31),
+                new Tuple<Destination,Product,int>(stl,bands,25),
+                new Tuple<Destination,Product,int>(stl,coils,28),
+                new Tuple<Destination,Product,int>(stl,plate,31),
 
-                new Tuple<Dest,Prod,int>(fre,bands,83),
-                new Tuple<Dest,Prod,int>(fre,coils,99),
-                new Tuple<Dest,Prod,int>(fre,plate,104),
+                new Tuple<Destination,Product,int>(fre,bands,83),
+                new Tuple<Destination,Product,int>(fre,coils,99),
+                new Tuple<Destination,Product,int>(fre,plate,104),
 
-                new Tuple<Dest,Prod,int>(laf,bands,15),
-                new Tuple<Dest,Prod,int>(laf,coils,20),
-                new Tuple<Dest,Prod,int>(laf,plate,20)
+                new Tuple<Destination,Product,int>(laf,bands,15),
+                new Tuple<Destination,Product,int>(laf,coils,20),
+                new Tuple<Destination,Product,int>(laf,plate,20)
             };
 
-            gary.Fcost = new Dictionary<Dest, int>
+            gary.Fcost = new Dictionary<Destination, int>
             {
                 {fra, 3000},
                 {det, 1200},
@@ -267,7 +269,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 {laf, 2500}
             };
 
-            clev.Fcost = new Dictionary<Dest, int>
+            clev.Fcost = new Dictionary<Destination, int>
             {
                 {fra, 2000},
                 {det, 1000},
@@ -278,7 +280,7 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 {laf, 2200}
             };
 
-            pitt.Fcost = new Dictionary<Dest, int>
+            pitt.Fcost = new Dictionary<Destination, int>
             {
                 {fra, 2000},
                 {det, 1200},
@@ -289,17 +291,21 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 {laf, 2200}
             };
 
-            foreach (Prod prod in prods)
+            foreach (Product prod in products)
             {
-                if (origs.Sum(origin => origin.Supply[prod]) != dests.Sum(dest => dest.Demand[prod]))
+                if (origins.Sum(origin => origin.Supply[prod]) != destinations.Sum(dest => dest.Demand[prod]))
                 {
                     throw new ArgumentException("Supply needs to be equal to demand!");
                 }
             }
 
-            multimip1Model.Destinations = dests;
-            multimip1Model.Origins = origs;
-            multimip1Model.Products = prods;
+            multimip1Model.Destinations = destinations;
+            multimip1Model.Origins = origins;
+            multimip1Model.Products = products;
+
+            #endregion
+
+            #region Model
 
             /*
              * mathematical model
@@ -307,8 +313,8 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
             var mathModel = new Model();
 
-            var Trans = new VariableCollection<Orig, Dest, Prod>(
-                (x, y, z) => new StringBuilder("Product_").Append(z.Id).Append(" from Orig_").Append(x.Id).Append(" to Dest_").Append(y.Id),
+            var Transport = new VariableCollection<Origin, Destination, Product>(
+                (x, y, z) => new StringBuilder("Product_").Append(z.Id).Append(" from Origin_").Append(x.Id).Append(" to Destination_").Append(y.Id),
                 0,
                 double.PositiveInfinity,
                 VariableType.Integer,
@@ -317,8 +323,8 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 multimip1Model.Products
                 );
 
-            var Use = new VariableCollection<Orig, Dest>(
-                (x, y) => new StringBuilder("Orig_").Append(x.Id).Append(" to Dest_").Append(y.Id),
+            var Use = new VariableCollection<Origin, Destination>(
+                (x, y) => new StringBuilder("Origin_").Append(x.Id).Append(" to Destination_").Append(y.Id),
                 0,
                 1,
                 VariableType.Integer,
@@ -327,41 +333,43 @@ namespace $rootnamespace$.Samples.Optimization.Framework
                 );
 
             mathModel.AddObjective(
-                Expression.Sum(multimip1Model.Origins.SelectMany(orig => orig.Vcost.Select(vcostlist => vcostlist.Item3 * Trans[orig, vcostlist.Item1, vcostlist.Item2]))) + Expression.Sum(multimip1Model.Origins.SelectMany(orig => multimip1Model.Destinations.Select(dest => orig.Fcost[dest] * Use[orig, dest]))),
+                Expression.Sum(multimip1Model.Origins.SelectMany(orig => orig.Vcost.Select(vcostlist => vcostlist.Item3 * Transport[orig, vcostlist.Item1, vcostlist.Item2]))) + Expression.Sum(multimip1Model.Origins.SelectMany(orig => multimip1Model.Destinations.Select(dest => orig.Fcost[dest] * Use[orig, dest]))),
                 "z"
                 );
 
-            //Angebot
-            foreach (Orig orig in multimip1Model.Origins)
+            // Supply
+            foreach (Origin orig in multimip1Model.Origins)
             {
-                foreach (Prod prod in multimip1Model.Products)
+                foreach (Product prod in multimip1Model.Products)
                 {
-                    var expression = Expression.Sum(multimip1Model.Destinations.Select(dest => Trans[orig, dest, prod]));
+                    var expression = Expression.Sum(multimip1Model.Destinations.Select(dest => Transport[orig, dest, prod]));
                     mathModel.AddConstraint(expression == orig.Supply[prod]);
                 }
             }
 
-            //Bedarf
-            foreach (Dest dest in multimip1Model.Destinations)
+            // Demand
+            foreach (Destination dest in multimip1Model.Destinations)
             {
-                foreach (Prod prod in multimip1Model.Products)
+                foreach (Product prod in multimip1Model.Products)
                 {
-                    var expression = Expression.Sum(multimip1Model.Origins.Select(orig => Trans[orig, dest, prod]));
+                    var expression = Expression.Sum(multimip1Model.Origins.Select(orig => Transport[orig, dest, prod]));
                     mathModel.AddConstraint(expression == dest.Demand[prod]);
                 }
             }
 
-            //Multi
-            foreach (Orig orig in multimip1Model.Origins)
+            // Multi
+            foreach (Origin orig in multimip1Model.Origins)
             {
-                foreach (Dest dest in multimip1Model.Destinations)
+                foreach (Destination dest in multimip1Model.Destinations)
                 {
-                    var expression = Expression.Sum(multimip1Model.Products.Select(prod => Trans[orig, dest, prod]));
+                    var expression = Expression.Sum(multimip1Model.Products.Select(prod => Transport[orig, dest, prod]));
                     mathModel.AddConstraint(expression <= multimip1Model.Limit * Use[orig, dest]);
                 }
             }
 
             return mathModel;
+
+            #endregion
         }
 
         private static Solution SolveModel(Model mathModel)
@@ -378,37 +386,37 @@ namespace $rootnamespace$.Samples.Optimization.Framework
 
         class multimip1model
         {
-            public List<Orig> Origins;
-            public List<Dest> Destinations;
-            public List<Prod> Products;
+            public List<Origin> Origins;
+            public List<Destination> Destinations;
+            public List<Product> Products;
 
             public int Limit;
 
             public multimip1model()
             {
-                Origins = new List<Orig>();
-                Destinations = new List<Dest>();
-                Products = new List<Prod>();
+                Origins = new List<Origin>();
+                Destinations = new List<Destination>();
+                Products = new List<Product>();
             }
         }
 
-        class Orig
+        class Origin
         {
             public int Id { get; set; }
             public string Name { get; set; }
-            public Dictionary<Prod, int> Supply { get; set; }
-            public List<Tuple<Dest, Prod, int>> Vcost { get; set; }
-            public Dictionary<Dest, int> Fcost { get; set; }
+            public Dictionary<Product, int> Supply { get; set; }
+            public List<Tuple<Destination, Product, int>> Vcost { get; set; }
+            public Dictionary<Destination, int> Fcost { get; set; }
         }
 
-        class Dest
+        class Destination
         {
             public int Id { get; set; }
             public string Name { get; set; }
-            public Dictionary<Prod, int> Demand { get; set; }
+            public Dictionary<Product, int> Demand { get; set; }
         }
 
-        class Prod
+        class Product
         {
             public int Id { get; set; }
             public string Name { get; set; }
